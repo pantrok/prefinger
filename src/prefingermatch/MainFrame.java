@@ -9,6 +9,10 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -22,8 +26,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class MainFrame extends javax.swing.JFrame {
 
     private BufferedImage mImage;
-    private int xAnterior = 0, xActual = 3;
-    private int yAnterior = 0, yActual = 3;
+    private int xAnterior = 0, xActual = 1;
+    private int yAnterior = 0, yActual = 1;
 
     /**
      * Creates new form MainFrame
@@ -138,20 +142,57 @@ public class MainFrame extends javax.swing.JFrame {
             }
         }*/
 
-        c : for (int x = xActual; x < mImage.getWidth() - 3; x += 7) {
-            for (int y = yActual; y < mImage.getHeight() - 3; y += 7) {
+        c:
+        for (int x = 1; x < mImage.getWidth() - 1; x += 3) {
+            for (int y = 1; y < mImage.getHeight() - 1; y += 3) {
                 Color color = new Color(mImage.getRGB(x, y));
                 if (color.getRGB() == Color.BLACK.getRGB()) {
                     //if (xActual < (mImage.getWidth() - 2) && yActual < (mImage.getHeight() - 2)) {
-                        BufferedImage subimagen = mImage.getSubimage(x - 3, y - 3, 7, 7);
-                        System.out.println("X " + (x - 3) + " Y " + (y - 3));
-                        Extractor ext = new Extractor(subimagen);
-                        ext.setVisible(true);
-                        xActual = x;
-                        yActual = y;
+                    BufferedImage subimagen = mImage.getSubimage(x - 1, y - 1, 3, 3);
+                    System.out.println("X " + (x - 1) + " Y " + (y - 1));
+                    //Extractor ext = new Extractor(subimagen);
+                    //ext.setVisible(true);
+                    long c = 0;
+                    int countPixels = 0;
+                    List<Integer> pixelValues = new ArrayList<>();
+                    pixelValues.add(new Color(subimagen.getRGB(0, 0)).getRGB() == Color.BLACK.getRGB() ? 0 : 1);
+                    pixelValues.add(new Color(subimagen.getRGB(0, 1)).getRGB() == Color.BLACK.getRGB() ? 0 : 1);
+                    pixelValues.add(new Color(subimagen.getRGB(0, 2)).getRGB() == Color.BLACK.getRGB() ? 0 : 1);
+                    pixelValues.add(new Color(subimagen.getRGB(1, 2)).getRGB() == Color.BLACK.getRGB() ? 0 : 1);
+                    pixelValues.add(new Color(subimagen.getRGB(2, 2)).getRGB() == Color.BLACK.getRGB() ? 0 : 1);
+                    pixelValues.add(new Color(subimagen.getRGB(2, 1)).getRGB() == Color.BLACK.getRGB() ? 0 : 1);
+                    pixelValues.add(new Color(subimagen.getRGB(2, 0)).getRGB() == Color.BLACK.getRGB() ? 0 : 1);
+                    pixelValues.add(new Color(subimagen.getRGB(1, 0)).getRGB() == Color.BLACK.getRGB() ? 0 : 1);
+                    for (int i = 1; i < 9; i++) {
+                        c += Math.abs(pixelValues.get(i % 8) - pixelValues.get(i - 1));
+                        countPixels += pixelValues.get(i - 1);
+                    }
+                    System.out.println("c " + c);
+                    c /= 2.0;
+                    System.out.println("c " + c);
+                    String tipoImagen;
+                    if (c == 1) {
+                        if (countPixels == 7) {
+                            tipoImagen = "tipo 1";
+                        } else {
+                            tipoImagen = "tipo 2";
+                        }
+                    } else if (c == 2) {
+                        tipoImagen = "tipo 2";
+                    } else {
+                        tipoImagen = "tipo 3";
+                    }
+                    File file = new File(System.getProperty("user.dir") + "/archivos/" + tipoImagen + "/" + System.currentTimeMillis() + ".png");
+                    try {
+                        ImageIO.write(subimagen, "png", file);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    xActual = x;
+                    yActual = y;
                     //}
-                    yActual+=5;
-                    break c;
+                    //yActual+=5;
+                    //break c;
                 }
             }
         }
