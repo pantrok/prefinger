@@ -8,7 +8,9 @@ package prefingermatch;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -141,10 +143,9 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         }*/
-
-        c:
-        for (int x = 1; x < mImage.getWidth() - 1; x += 3) {
-            for (int y = 1; y < mImage.getHeight() - 1; y += 3) {
+        StringBuilder file = new StringBuilder(""); 
+        for (int x = 1; x < mImage.getWidth() - 1; x++) {
+            for (int y = 1; y < mImage.getHeight() - 1; y++) {
                 Color color = new Color(mImage.getRGB(x, y));
                 if (color.getRGB() == Color.BLACK.getRGB()) {
                     //if (xActual < (mImage.getWidth() - 2) && yActual < (mImage.getHeight() - 2)) {
@@ -167,45 +168,49 @@ public class MainFrame extends javax.swing.JFrame {
                         c += Math.abs(pixelValues.get(i % 8) - pixelValues.get(i - 1));
                         countPixels += pixelValues.get(i - 1);
                     }
-                    System.out.println("c " + c);
                     c /= 2.0;
                     System.out.println("c " + c);
-                    String tipoImagen;
+                    //String tipoImagen;
+                    file.append(x).append(" ").append(y).append(" ").append(Utils.angle(mImage, x, y)).append(" ");
                     if (c == 1) {
                         if (countPixels == 7) {
-                            tipoImagen = "tipo 1";
+                            //tipoImagen = "tipo 1";
+                            file.append(1);
+                            mImage.setRGB(x, y, Color.RED.getRGB());
                         } else {
-                            tipoImagen = "tipo 2";
+                            //tipoImagen = "tipo 2";
+                            file.append(2);
                         }
-                        System.out.println("angle " + Utils.angle(mImage, x, y));
                     } else if (c == 2) {
-                        tipoImagen = "tipo 2";
-                        System.out.println("angle " + Utils.angle(mImage, x, y));
-                    } else if (c == 4 ){
-                        tipoImagen = "tipo 4";
-                        //Calculamos angulo
-                        System.out.println("angle " + Utils.angle(mImage, x, y));
+                        //tipoImagen = "tipo 2";
+                        file.append(2);
+                    } else if (c == 4) {
+                        //tipoImagen = "tipo 4";
+                        file.append(4);
+                        mImage.setRGB(x, y, Color.GREEN.getRGB());
                     } else {
-                        tipoImagen = "tipo 3";
-                        System.out.println("angle " + Utils.angle(mImage, x, y));
+                        //tipoImagen = "tipo 3";
+                        mImage.setRGB(x, y, Color.BLUE.getRGB());
+                        file.append(3);
                     }
-                    File file = new File(System.getProperty("user.dir") + "/archivos/" + tipoImagen + "/" + System.currentTimeMillis() + ".png");
-                    try {
-                        ImageIO.write(subimagen, "png", file);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    xActual = x;
-                    yActual = y;
+                    file.append(System.getProperty("line.separator"));
+                    //File file = new File(System.getProperty("user.dir") + "/archivos/" + tipoImagen + "/" + System.currentTimeMillis() + ".png");
+                    //try {
+                    //ImageIO.write(subimagen, "png", file);
+                    //} catch (IOException ex) {
+                    //    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                     //}
-                    //yActual+=5;
-                    //break c;
                 }
             }
         }
 
-        /*mImage = new ThinningAlgorithm(mImage).thinImage();
-        jLabel1.setIcon(new ImageIcon(mImage));*/
+        try (PrintWriter out = new PrintWriter(System.getProperty("user.dir") + "/archivos/" + System.currentTimeMillis() +".txt")) {
+            out.println(file.toString());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //mImage = new ThinningAlgorithm(mImage).thinImage();
+        jLabel1.setIcon(new ImageIcon(mImage));
 
     }//GEN-LAST:event_jButton2ActionPerformed
 

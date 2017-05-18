@@ -21,30 +21,35 @@ public class Utils {
     public static double angle (BufferedImage imagen, int i, int j) {
         double angle = 0;
         double sum = 0;
+        double num = 0;
+        double dem = 0;
         for (int x = (i-3); x < (i+3); x++) {
             for (int y = (j-3); y < (j+3); y++) {
-                Color c00 = new Color(imagen.getRGB(x - 1, y - 1));
-                Color c01 = new Color(imagen.getRGB(x, y - 1));
-                Color c02 = new Color(imagen.getRGB(x + 1, y - 1));
-                Color c10 = new Color(imagen.getRGB(x - 1, y));
-                Color c11 = new Color(imagen.getRGB(x, y));
-                Color c12 = new Color(imagen.getRGB(x + 1, y));
-                Color c20 = new Color(imagen.getRGB(x - 1, y + 1));
-                Color c21 = new Color(imagen.getRGB(x, y + 1));
-                Color c22 = new Color(imagen.getRGB(x + 1, y + 1));
-                int Gx = (c00.getRed() * MATRIZ_CONVU_SOBEL_X[0][0]) + (c01.getRed() * MATRIZ_CONVU_SOBEL_X[0][1]) + (c02.getRed() * MATRIZ_CONVU_SOBEL_X[0][2])
-                        + (c10.getRed() * MATRIZ_CONVU_SOBEL_X[1][0]) + (c11.getRed() * MATRIZ_CONVU_SOBEL_X[1][1]) + (c12.getRed() * MATRIZ_CONVU_SOBEL_X[1][2])
-                        + (c20.getRed() * MATRIZ_CONVU_SOBEL_X[2][0]) + (c21.getRed() * MATRIZ_CONVU_SOBEL_X[2][1]) + (c22.getRed() * MATRIZ_CONVU_SOBEL_X[2][2]);
-                int Gy = (c00.getRed() * MATRIZ_CONVU_SOBEL_Y[0][0]) + (c01.getRed() * MATRIZ_CONVU_SOBEL_Y[0][1]) + (c02.getRed() * MATRIZ_CONVU_SOBEL_Y[0][2])
-                        + (c10.getRed() * MATRIZ_CONVU_SOBEL_Y[1][0]) + (c11.getRed() * MATRIZ_CONVU_SOBEL_Y[1][1]) + (c12.getRed() * MATRIZ_CONVU_SOBEL_Y[1][2])
-                        + (c20.getRed() * MATRIZ_CONVU_SOBEL_Y[2][0]) + (c21.getRed() * MATRIZ_CONVU_SOBEL_Y[2][1]) + (c22.getRed() * MATRIZ_CONVU_SOBEL_Y[2][2]);
-                double num = 2 * Gx * Gy;
-                double dem = (Gx * Gx) - (Gy * Gy);
-                sum += (num/dem);
+                int c00 = new Color(imagen.getRGB(x - 1, y - 1)).getRGB() == Color.BLACK.getRGB() ? 0 : 1;
+                int c01 = new Color(imagen.getRGB(x, y - 1)).getRGB() == Color.BLACK.getRGB() ? 0 : 1;
+                int c02 = new Color(imagen.getRGB(x + 1, y - 1)).getRGB() == Color.BLACK.getRGB() ? 0 : 1;
+                int c10 = new Color(imagen.getRGB(x - 1, y)).getRGB() == Color.BLACK.getRGB() ? 0 : 1;
+                int c11 = new Color(imagen.getRGB(x, y)).getRGB() == Color.BLACK.getRGB() ? 0 : 1;
+                int c12 = new Color(imagen.getRGB(x + 1, y)).getRGB() == Color.BLACK.getRGB() ? 0 : 1;
+                int c20 = new Color(imagen.getRGB(x - 1, y + 1)).getRGB() == Color.BLACK.getRGB() ? 0 : 1;
+                int c21 = new Color(imagen.getRGB(x, y + 1)).getRGB() == Color.BLACK.getRGB() ? 0 : 1;
+                int c22 = new Color(imagen.getRGB(x + 1, y + 1)).getRGB() == Color.BLACK.getRGB() ? 0 : 1;
+                
+                int Gx = (c00 * MATRIZ_CONVU_SOBEL_X[0][0]) + (c01 * MATRIZ_CONVU_SOBEL_X[0][1]) + (c02 * MATRIZ_CONVU_SOBEL_X[0][2])
+                        + (c10 * MATRIZ_CONVU_SOBEL_X[1][0]) + (c11 * MATRIZ_CONVU_SOBEL_X[1][1]) + (c12 * MATRIZ_CONVU_SOBEL_X[1][2])
+                        + (c20 * MATRIZ_CONVU_SOBEL_X[2][0]) + (c21 * MATRIZ_CONVU_SOBEL_X[2][1]) + (c22 * MATRIZ_CONVU_SOBEL_X[2][2]);
+                int Gy = (c00 * MATRIZ_CONVU_SOBEL_Y[0][0]) + (c01 * MATRIZ_CONVU_SOBEL_Y[0][1]) + (c02 * MATRIZ_CONVU_SOBEL_Y[0][2])
+                        + (c10 * MATRIZ_CONVU_SOBEL_Y[1][0]) + (c11 * MATRIZ_CONVU_SOBEL_Y[1][1]) + (c12 * MATRIZ_CONVU_SOBEL_Y[1][2])
+                        + (c20 * MATRIZ_CONVU_SOBEL_Y[2][0]) + (c21 * MATRIZ_CONVU_SOBEL_Y[2][1]) + (c22 * MATRIZ_CONVU_SOBEL_Y[2][2]);
+                
+                num += 2 * Gx * Gy;
+                dem += (Gx * Gx) - (Gy * Gy);
+                //sum += (num/dem);
             }
         }
-        
-        angle = 0.5 * Math.atan(sum);
+        System.out.println("num " + num);
+        System.out.println("dem " + dem);
+        angle = 0.5 * Math.atan(num/dem);
         return angle;
         
     }
