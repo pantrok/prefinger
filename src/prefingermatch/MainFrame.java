@@ -177,10 +177,17 @@ public class MainFrame extends javax.swing.JFrame {
                         } else {
                             tipoImagen = "tipo 2";
                         }
+                        System.out.println("angle " + Utils.angle(mImage, x, y));
                     } else if (c == 2) {
                         tipoImagen = "tipo 2";
+                        System.out.println("angle " + Utils.angle(mImage, x, y));
+                    } else if (c == 4 ){
+                        tipoImagen = "tipo 4";
+                        //Calculamos angulo
+                        System.out.println("angle " + Utils.angle(mImage, x, y));
                     } else {
                         tipoImagen = "tipo 3";
+                        System.out.println("angle " + Utils.angle(mImage, x, y));
                     }
                     File file = new File(System.getProperty("user.dir") + "/archivos/" + tipoImagen + "/" + System.currentTimeMillis() + ".png");
                     try {
