@@ -19,7 +19,7 @@ public class Utils {
     
     //Calcular angulo
     public static double angle (BufferedImage imagen, int i, int j) {
-        double angle = 0;
+        double phi = 0;
         double sum = 0;
         double num = 0;
         double dem = 0;
@@ -47,10 +47,20 @@ public class Utils {
                 //sum += (num/dem);
             }
         }
-        System.out.println("num " + num);
-        System.out.println("dem " + dem);
-        angle = 0.5 * Math.atan(num/dem);
-        return angle;
+        //System.out.println("num " + num);
+        //System.out.println("dem " + dem);
+        phi = 0.5 * Math.atan(num/dem);
+        double k;
+        if ((phi < 0 && num < 0) || (phi >= 0 && num > 0)) {
+            k = 0.5;
+        } else if (phi < 0 && num >= 0) {
+            k = 1;
+        } else /*if (phi >= 0 && num <= 0)*/ {
+            k = 0;
+        }
+        System.out.println(Math.toDegrees(phi + (k*Math.PI)));
+        //System.out.println((phi + (k*Math.PI)));
+        return Math.toDegrees(phi + (k*Math.PI));
         
     }
 
